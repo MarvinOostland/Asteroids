@@ -25,21 +25,34 @@ class Background(object):
 class Spaceship(pygame.sprite.Sprite):
     def __init__(self, filename):
         super().__init__()
-        self.image_orig = pygame.image.load(os.path.join(Settings.path_image, filename)).convert_alpha()
         self.image = pygame.image.load(os.path.join(Settings.path_image, filename)).convert_alpha()
         self.image = pygame.transform.scale(self.image, Settings.spaceship_size)
         self.rect = self.image.get_rect()
         self.rect.left = Settings.window_width // 2
         self.rect.top =  Settings.window_height // 2
         self.angle = 0
-        self.angle_change = 0
 
-    def draw(self, screen):
-        screen.blit(self.image, self.rect)
+    def turn_left(self):
+        self.angle += 22.5
+        center = self.rect.center
+        self.image = pygame.transform.rotate(self.image, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        
+
+    def turn_right(self):
+        self.angle -= 22.5
+        center = self.rect.center
+        self.image = pygame.transform.rotate(self.image, self.angle)
+        self.rect = self.image.get_rect()
+        self.rect.center = center
 
 
     def update(self):
         pass
+    
+    def draw(self, screen):
+        screen.blit(self.image, self.rect)
 
 
 class Game(object):
@@ -67,7 +80,9 @@ class Game(object):
                 self.running = False
             if event.type == pygame.KEYDOWN:
                 if event.key == pygame.K_RIGHT:
-                    self.spaceship.image = pygame.transform.rotate(self.spaceship.image, 22.5)
+                    self.spaceship.turn_right()
+                if event.key == pygame.K_LEFT:
+                    self.spaceship.turn_left()
 
     def update(self):
         pass
